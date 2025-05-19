@@ -5,7 +5,7 @@ function grenade:Throw()
 end
 
 function grenade:Destroy()
-    warn("Destroyed grenade")
+    print("Destroyed grenade")
 end
 
 return grenade

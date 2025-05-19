@@ -5,16 +5,16 @@
 local grenade = require("core/grenade.luau")
 
 --// References
-local buildInfo = getfenv()._MYRIAD_BUILD
+local bInfo = getfenv().__Metadata
 
 --// Initiailize
-if buildInfo.Configuration == "Debug" then
-    print("Debug build")
-elseif buildInfo.Configuration == "Release" then
+if bInfo.Configuration == "Debug" then
+    print("[!] You are in a debug build.")
+elseif bInfo.Configuration == "Release" then
     getfenv(0).print = function() return nil end
     getfenv(0).warn = function() return nil end
     getfenv(0).print = function() return nil end
 end
 
 grenade:Throw()
-task.delay(1, grenade.Destroy)
+grenade:Destroy()

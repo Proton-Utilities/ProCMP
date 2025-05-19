@@ -1,0 +1,20 @@
+{
+    "paths": {
+        "frame": "build/frame.luau",
+        "darkluaConfig": "build/.darklua.json",
+        "input": "src/init.luau",
+        "output": "dist.luau"
+    },
+    "buildConfigs": [
+        "Debug",
+        "Release"
+    ],
+    "deployment": {
+        "enabled": true,
+        "github": {
+            "apiKey": "1234567890",
+            "owner": "SomeUser123",
+            "repo": "SomeName123"
+        }
+    }
+}
