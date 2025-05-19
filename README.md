@@ -8,7 +8,7 @@ ProCMP allows for easy build composition with composer-markers, it gives you acc
 
 | Release build | Debug build |
 |-|-|
-| ![Release build](Assets\cliRelease_preview.gif) | ![Debug build](Assets\cliDebug_preview.gif) |
+| ![Release build](./Assets/releasePreview.gif) | ![Debug build](./Assets/debugPreview.gif) |
 
 ## Dependencies
 
