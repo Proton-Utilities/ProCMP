@@ -6,8 +6,8 @@ A build composer system using Lune & darklua with automated release deployment.
 
 ProCMP allows for easy build composition with composer-markers, it gives you access to runtime build data and add extra information such as headers to your distribution file.
 
-<img alt="Composing a release build" src="Assets\cliRelease_preview.gif" width=45% />
-<img alt="Composing a debug build" src="Assets\cliDebug_preview.gif" width=45% />
+<img alt="Composing a release build" src="Assets\cliRelease_preview.gif" width="300" />
+<img alt="Composing a debug build" src="Assets\cliDebug_preview.gif" width="300" />
 
 ## Dependencies
 
