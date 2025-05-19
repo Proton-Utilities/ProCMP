@@ -10,8 +10,8 @@
     This file was automatically generated with darklua, it is not intended for manual editing.
 --]]
 
-_B_VERSION = "Debug"
-_B_VERSION = "v0.0.0"
+__BUILD = "Debug"
+__VERSION = "v0.0.0"
 
 local a a={cache={},load=function(b)if not a.cache[b]then a.cache[b]={c=a[b]()}
 end return a.cache[b].c end}do function a.a()local b={}function b:Throw()print
