@@ -25,7 +25,7 @@ To use ProCMP, you must have Lune and Darklua installed. See the guides below fo
 
 2. **Download the ProCMP script, and place it in this directory**. You can name it whatever you want, for simplicity, I will use "build.luau". If everything was done right, you should be able to use the `lune list` command and your script should show. </br> [Get the latest release](https://github.com/Proton-Utilities/ProCMP/releases/latest/download/build.luau)
 
-3. **Add a frame**, this is essentially your build insertion file. Add composer markers to get build info like as the build itself, and the build version. </br> [Example frame](Example\build\frame.luau)
+3. **Add a frame**, this is essentially your build insertion file. Add composer markers to get build info like as the build itself, and the build version. </br> [Example frame](Example/build/frame.luau)
 
 4. **Run using `lune run build <config_location>`**, you should be prompted with a CLI interface asking for the build configuration and version. After completing the prompt your file will be built and composed at the output location. </br> [Example config](Example/build/.pcmp.json)
 
