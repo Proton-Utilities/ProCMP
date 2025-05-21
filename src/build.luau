@@ -37,6 +37,11 @@ local composerMarkers = {
 --// Constants
 local RELEASE_BODY = "RELEASE_BODY.md"
 
+--// Functions
+local function getBaseName(path)
+	return path:match("^.+[\\/](.+)$") or path
+end
+
 --// Compose
 local parsedConfigs = {}
 
@@ -125,7 +130,7 @@ if configOptions.promptDeploy and config.deployment.enabled then
 				local releaseData = serde.decode("json", response.body)
 				local releaseId = releaseData.id
 				if releaseId and fs.isFile(configOptions.output) then
-					local assetName = fs.baseName(configOptions.output)
+					local assetName = getBaseName(configOptions.output)
 					local uploadUrl = string.format(
 						"https://uploads.github.com/repos/%s/%s/releases/%s/assets?name=%s",
 						ghCfg.owner, ghCfg.repo, tostring(releaseId), assetName
