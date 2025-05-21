@@ -6,4 +6,4 @@ declare __COMPOSER: {
     vers: string
 }
 
-declare _P: {}
+declare _P: {[any]: any}
