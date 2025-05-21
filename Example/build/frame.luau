@@ -10,7 +10,15 @@
     This file was automatically generated with darklua, it is not intended for manual editing.
 --]]
 
-__BUILD = __PROCMP.Insert(__PROCMP.BuildConfig)
-__VERSION = __PROCMP.Insert(__PROCMP.BuildVersion)
+_P.genDate = __COMPOSER.Insert(__COMPOSER.genDate)
+_P.cfg = __COMPOSER.Insert(__COMPOSER.cfg)
+_P.vers = __COMPOSER.Insert(__COMPOSER.vers)
 
-__PROCMP.Insert(__PROCMP.Build)
+--[[
+    __COMPOSER is a marker for the composer to replace with actual information.
+
+    _P is the actual runtime table that holds your build info.
+    You can change _P to anything you want. But if you use luau-lsp then be sure to change the definition in .globals/pcmp.d.luau
+]]
+
+__COMPOSER.Insert(__COMPOSER.build)
