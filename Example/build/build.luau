@@ -3,7 +3,7 @@
 
 --[[
     @author Proton-Utilities
-	@version 1.2.0
+	@version 1.3.1
     @name ProCMP
     @description Build composer system using Lune & darklua
 ]]
@@ -34,7 +34,16 @@ request{url=string.format('https://api.github.com/repos/%s/%s/releases',s.owner,
 s.repo),method='POST',headers={Authorization='Bearer '..s.apiKey,['Content-Type'
 ]='application/json'},body=e.jsonEncode{tag_name=l,name=`{k} {l}`,body=b.isFile(
 n)and b.readFile(n)or'',draft=false,prerelease=q.prerelease}}if t.ok then print(
-'Deployment successful: '..t.statusMessage)else print('Deployment failed: '..t.
-statusMessage)print(t.body)if t.body:find'Bad credentials'then warn
+'Deployment successful: '..t.statusMessage)local u=d.decode('json',t.body)local
+v=u.id if v and b.isFile(q.output)then local w=b.baseName(q.output)local x,y=
+string.format(
+[[https://uploads.github.com/repos/%s/%s/releases/%s/assets?name=%s]],s.owner,s.
+repo,tostring(v),w),b.readFile(q.output)local z=e.request{url=x,method='POST',
+headers={Authorization='Bearer '..s.apiKey,['Content-Type']=
+'application/octet-stream'},body=y}if z.ok then print('Asset uploaded: '..w)else
+print('Asset upload failed: '..z.statusMessage)print(z.body)end else print
+'Could not upload asset: release id or file missing'end else print(
+'Deployment failed: '..t.statusMessage)print(t.body)if t.body:find
+'Bad credentials'then warn
 '\u{2753} Did you set up github deployment in the pcmp configuration file?'end
 end end end if b.isFile(n)then b.removeFile(n)end end

@@ -122,6 +122,33 @@ if configOptions.promptDeploy and config.deployment.enabled then
 
 			if response.ok then
 				print("Deployment successful: " .. response.statusMessage)
+				local releaseData = serde.decode("json", response.body)
+				local releaseId = releaseData.id
+				if releaseId and fs.isFile(configOptions.output) then
+					local assetName = fs.baseName(configOptions.output)
+					local uploadUrl = string.format(
+						"https://uploads.github.com/repos/%s/%s/releases/%s/assets?name=%s",
+						ghCfg.owner, ghCfg.repo, tostring(releaseId), assetName
+					)
+					local fileContent = fs.readFile(configOptions.output)
+					local uploadResp = net.request({
+						url = uploadUrl,
+						method = "POST",
+						headers = {
+							["Authorization"] = "Bearer " .. ghCfg.apiKey,
+							["Content-Type"] = "application/octet-stream",
+						},
+						body = fileContent,
+					})
+					if uploadResp.ok then
+						print("Asset uploaded: " .. assetName)
+					else
+						print("Asset upload failed: " .. uploadResp.statusMessage)
+						print(uploadResp.body)
+					end
+				else
+					print("Could not upload asset: release id or file missing")
+				end
 			else
 				print("Deployment failed: " .. response.statusMessage)
 				print(response.body)
