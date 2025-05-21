@@ -35,7 +35,7 @@ local composerMarkers = {
 }
 
 --// Constants
-local RELEASE_BODY = "RELEASE_BODY.md"
+local RELEASE_BODY = (process.env.TEMP or process.env.TMP) .. "/RELEASE_BODY.md"
 
 --// Functions
 local function getBaseName(path)
