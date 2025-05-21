@@ -3,7 +3,7 @@
 
 --[[
     @author Proton-Utilities
-	@version 1.3.1
+	@version 1.2.1
     @name ProCMP
     @description Build composer system using Lune & darklua
 ]]
