@@ -96,7 +96,7 @@ if configOptions.promptDeploy and config.deployment.enabled then
 	local ghCfg = config.deployment.github
 
 	if io.prompt("confirm", "Do you want to distribute this build publicly?") then
-		fs.writeFile(RELEASE_BODY, `# {buildConfig} {buildVers}`)
+		fs.writeFile(RELEASE_BODY, `# {ghCfg.repo} {buildVers}`)
 
 		if process.os == "windows" then
 			process.spawn("powershell", {

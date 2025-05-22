@@ -3,7 +3,7 @@
 
 --[[
     @author Proton-Utilities
-	@version 1.2.3
+	@version 1.2.4
     @name ProCMP
     @description Build composer system using Lune & darklua
 ]]
@@ -28,7 +28,7 @@ openComposedOutput and c.os=='windows'then c.spawn('powershell',{
 '-ExecutionPolicy','Bypass','-NoProfile','-Command',`code '{r.output}'`})end if
 r.promptDeploy and g.deployment.enabled then local t=g.deployment.github if a.
 prompt('confirm','Do you want to distribute this build publicly?')then b.
-writeFile(n,`# {k} {l}`)if c.os=='windows'then c.spawn('powershell',{
+writeFile(n,`# {t.repo} {l}`)if c.os=='windows'then c.spawn('powershell',{
 '-ExecutionPolicy','Bypass','-NoProfile','-Command',`code '{n}'`})end if a.
 prompt('confirm','Add release notes, and confirm when done')then local u=e.
 request{url=string.format('https://api.github.com/repos/%s/%s/releases',t.owner,
