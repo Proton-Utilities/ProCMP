@@ -55,7 +55,7 @@ local configOptions = buildConfigs[selected]
 
 buildVers = configOptions.promptVersion and io.prompt("text", "Build version (vMAJOR.MINOR.PATCH)") or "v0.0.0"
 
-local srcResult = process.spawn("darklua", {
+local srcResult = process.exec("darklua", {
 	"process",
 	configOptions.input,
 	configOptions.output,
@@ -82,7 +82,7 @@ fs.writeFile(configOptions.output, frame)
 print("Build complete: " .. configOptions.output)
 
 if config.openComposedOutput and process.os == "windows" then
-	process.spawn("powershell", {
+	process.exec("powershell", {
 		"-ExecutionPolicy",
 		"Bypass",
 		"-NoProfile",
@@ -99,7 +99,7 @@ if configOptions.promptDeploy and config.deployment.enabled then
 		fs.writeFile(RELEASE_BODY, `# {ghCfg.repo} {buildVers}`)
 
 		if process.os == "windows" then
-			process.spawn("powershell", {
+			process.exec("powershell", {
 				"-ExecutionPolicy",
 				"Bypass",
 				"-NoProfile",

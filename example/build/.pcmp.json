@@ -9,7 +9,7 @@
             "promptDeploy": false,
 
             "frame": "build/frame.luau",
-            "darkluaConfig": "build/.darklua.json",
+            "darkluaConfig": "build/.darklua_debug.json",
             "input": "src/init.luau",
             "output": "dist/debug.luau"
         },

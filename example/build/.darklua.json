@@ -4,9 +4,7 @@
         "modules_identifier": "__DIST",
         "require_mode": {
 			"name": "path",
-			"sources": {
-				"core": "../src/core"
-			  }
+			"use_luau_configuration": true
 		}
     },
     "rules": [
