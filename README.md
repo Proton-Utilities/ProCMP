@@ -1,6 +1,6 @@
 # ProCMP
 
-A DarkLua-based build composition system with automated release deployment and support for runtime build macros.
+Build composition system with multi-target support, profiles, and injectable macros.
 
 ## About
 
@@ -36,6 +36,11 @@ aftman add Proton-Utilities/ProCMP
 
 2. **Run using `ProCMP build <config_location>`**, you should be prompted with a CLI interface asking for the build configuration and version. After completing the prompt your file will be built and composed at the output location.
 </br> [Example PCMP config](example/build/.pcmp.json)
+
+Additionally, if you are taking advantage of auto github release deployment, you need to add a `.env` file to the root of your project with your api key.
+```dotenv
+GITHUB_API_KEY="YOUR_API_KEY"
+```
 
 > You can also use *VS code tasks* to build using a keybind instead of typing a terminal command
 </br> [Example VSC task config](example/.vscode/tasks.json)
