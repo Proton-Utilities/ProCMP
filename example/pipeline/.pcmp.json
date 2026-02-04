@@ -1,0 +1,66 @@
+{
+    "openComposedOutput": true,
+
+    "testing": {
+        "enabled": true,
+        "inputDir": "tests",
+        "outputDir": "generated/tests",
+        "frame": "pipeline/frame.luau",
+        "darkluaConfig": "pipeline/darklua_cfgs/unminified.json"
+    },
+
+    "deployment": {
+        "enabled": true,
+        "github": {
+            "enabled": true,
+            "owner": "YOUR_NAME",
+            "repo": "YOUR_REPOSITORY"
+        }
+    },
+
+    "buildConfigs": [
+        {
+            "name": "Debug",
+            "promptVersion": false,
+            "promptDeploy": false,
+            "frame": "pipeline/frame.luau",
+            "darkluaConfig": "pipeline/darklua_cfgs/unminified.json",
+            "input": "src/init.luau",
+            "output": "generated/debug/myScript.luau"
+        },
+
+        {
+            "name": "Beta",
+            "promptVersion": true,
+            "promptDeploy": true,
+            "prerelease": true,
+            "frame": "pipeline/frame.luau",
+            "darkluaConfig": "pipeline/darklua_cfgs/stable.json",
+            "input": "src/init.luau",
+            "output": "generated/beta/myScript.luau",
+            "variants": [
+                {
+                    "name": "Unminified",
+                    "darkluaConfig": "pipeline/darklua_cfgs/unminified.json",
+                    "output": "generated/beta/myScript-unminified.luau"
+                }
+            ]
+        },
+        {
+            "name": "Release",
+            "promptVersion": true,
+            "promptDeploy": true,
+            "frame": "pipeline/frame.luau",
+            "darkluaConfig": "pipeline/darklua_cfgs/stable.json",
+            "input": "src/init.luau",
+            "output": "generated/release/myScript.luau",
+            "variants": [
+                {
+                    "name": "Unminified",
+                    "darkluaConfig": "pipeline/darklua_cfgs/unminified.json",
+                    "output": "generated/release/myScript-unminified.luau"
+                }
+            ]
+        }
+  ]
+}

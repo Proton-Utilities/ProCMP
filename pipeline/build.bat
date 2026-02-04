@@ -3,7 +3,7 @@
 @echo off
 setlocal EnableDelayedExpansion
 
-set outputDir=dist
+set outputDir=generated
 set exeName=pcmp.exe
 set tempPath=%outputDir%\__temp_release
 
@@ -11,11 +11,11 @@ set targets=windows-x86_64 linux-x86_64 linux-aarch64 macos-x86_64 macos-aarch64
 
 :: !!!!!!!!!!!!!!!!!! ::
 
-set version=2.0.0
+set version=2.1.0
 
 :: !!!!!!!!!!!!!!!!!! ::
 
-if exist %tempPath% rmdir /s /q %tempPath%
+rmdir /s /q %outputDir%
 mkdir %tempPath%
 
 for %%T in (%targets%) do (
@@ -31,7 +31,7 @@ for %%T in (%targets%) do (
 
     if exist "!zipPath!" del "!zipPath!"
 
-    lunepre build src/pcmp.luau -o "%tempPath%\%exeName%" -t !platform!-!arch!
+    lune build src/pcmp.luau -o "%tempPath%\%exeName%" -t !platform!-!arch!
 
     powershell Compress-Archive -Path "%tempPath%\%exeName%" -DestinationPath "!zipPath!"
 
