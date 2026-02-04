@@ -1,20 +1,19 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-      {
-        "label": "Run ProCMP",
-        "type": "shell",
-        "command": "pcmp",
-        "args": [
-          "build/.pcmp.json"
-        ],
-        "group": {
-          "kind": "build",
-          "isDefault": true
-        },
-        "problemMatcher": [],
-        "detail": "Builds and composes source with ProCMP"
-      }
-    ]
-  }
-  
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run ProCMP",
+      "type": "shell",
+      "command": "C:\\Users\\adminstrators1\\.aftman\\tool-storage\\pcmp.exe",
+      "args": [
+        "pipeline/.pcmp.json"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "detail": "Builds and composes source with ProCMP"
+    }
+  ]
+}

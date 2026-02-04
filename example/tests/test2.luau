@@ -1,0 +1,1 @@
+print("This is another test, you can automatically generate tests by adding the testing section to your .pcmp config (see pipeline/.pcmp.json")
