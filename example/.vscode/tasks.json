@@ -4,7 +4,7 @@
     {
       "label": "Run ProCMP",
       "type": "shell",
-      "command": "C:\\Users\\adminstrators1\\.aftman\\tool-storage\\pcmp.exe",
+      "command": "pcmp",
       "args": [
         "pipeline/.pcmp.json"
       ],
