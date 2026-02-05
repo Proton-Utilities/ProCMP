@@ -5,8 +5,8 @@
         "enabled": true,
         "inputDir": "tests",
         "outputDir": "generated/tests",
-        "frame": "pipeline/frame.luau",
-        "darkluaConfig": "pipeline/darklua_cfgs/unminified.json"
+        "frame": "pipeline/frames/release.luau",
+        "darkluaConfig": "pipeline/darklua/unminified.json"
     },
 
     "deployment": {
@@ -23,8 +23,8 @@
             "name": "Debug",
             "promptVersion": false,
             "promptDeploy": false,
-            "frame": "pipeline/frame.luau",
-            "darkluaConfig": "pipeline/darklua_cfgs/unminified.json",
+            "frame": "pipeline/frames/debug.luau",
+            "darkluaConfig": "pipeline/darklua/unminified.json",
             "input": "src/init.luau",
             "output": "generated/debug/myScript.luau"
         },
@@ -34,14 +34,14 @@
             "promptVersion": true,
             "promptDeploy": true,
             "prerelease": true,
-            "frame": "pipeline/frame.luau",
-            "darkluaConfig": "pipeline/darklua_cfgs/stable.json",
+            "frame": "pipeline/frames/release.luau",
+            "darkluaConfig": "pipeline/darklua/stable.json",
             "input": "src/init.luau",
             "output": "generated/beta/myScript.luau",
             "variants": [
                 {
                     "name": "Unminified",
-                    "darkluaConfig": "pipeline/darklua_cfgs/unminified.json",
+                    "darkluaConfig": "pipeline/darklua/unminified.json",
                     "output": "generated/beta/myScript-unminified.luau"
                 }
             ]
@@ -50,14 +50,14 @@
             "name": "Release",
             "promptVersion": true,
             "promptDeploy": true,
-            "frame": "pipeline/frame.luau",
-            "darkluaConfig": "pipeline/darklua_cfgs/stable.json",
+            "frame": "pipeline/frames/release.luau",
+            "darkluaConfig": "pipeline/darklua/stable.json",
             "input": "src/init.luau",
             "output": "generated/release/myScript.luau",
             "variants": [
                 {
                     "name": "Unminified",
-                    "darkluaConfig": "pipeline/darklua_cfgs/unminified.json",
+                    "darkluaConfig": "pipeline/darklua/unminified.json",
                     "output": "generated/release/myScript-unminified.luau"
                 }
             ]
