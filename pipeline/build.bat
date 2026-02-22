@@ -11,7 +11,7 @@ set targets=windows-x86_64 linux-x86_64 linux-aarch64 macos-x86_64 macos-aarch64
 
 :: !!!!!!!!!!!!!!!!!! ::
 
-set version=2.1.0
+set version=2.1.1-beta.1
 
 :: !!!!!!!!!!!!!!!!!! ::
 

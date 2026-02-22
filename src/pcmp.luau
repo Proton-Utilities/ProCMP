@@ -276,7 +276,21 @@ if isDeployable and config.deployment.enabled then
 			body = fs.readFile(filePath),
 		})
 
-		if uploadResp.ok then
+		if uploadResp.statusCode == 307 then
+			local redirectUrl = uploadResp.headers["Location"] or uploadResp.headers["location"]
+			if redirectUrl then
+				uploadResp = net.request({
+					url = redirectUrl,
+					method = "POST",
+					headers = {
+						["Content-Type"] = "application/octet-stream",
+					},
+					body = fs.readFile(filePath),
+				})
+			end
+		end
+
+		if uploadResp.ok or uploadResp.statusCode == 201 then
 			print(`✅ Uploaded: {assetName}`)
 		else
 			print(`❌ Failed: {assetName} - {uploadResp.statusMessage}`)
