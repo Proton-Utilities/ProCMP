@@ -1,0 +1,11 @@
+nav:
+  - index.md
+  - Getting Started:
+    - getting-started.md
+    - init.md
+  - Guides:
+    - local-config.md
+    - composer-markers.md
+    - deployment.md
+  - Reference:
+    - config-reference.md

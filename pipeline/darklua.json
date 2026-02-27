@@ -1,0 +1,12 @@
+{
+    "generator": "retain_lines",
+    "bundle": {
+        "modules_identifier": "__PCMP",
+        "require_mode": {
+            "name": "luau",
+            "use_luau_configuration": true
+        },
+        "excludes": ["@lune/**"]
+    },
+    "rules": []
+}

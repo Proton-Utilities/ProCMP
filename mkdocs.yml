@@ -1,0 +1,73 @@
+site_name: ProCMP Documentation
+
+repo_name: Proton-Utilities/ProCMP
+repo_url: https://github.com/Proton-Utilities/ProCMP
+edit_uri: edit/main/docs
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.details
+  - pymdownx.tasklist
+  - admonition
+  - attr_list
+  - md_in_html
+
+plugins:
+  - search
+  - awesome-nav
+
+theme:
+  name: material
+
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/pencil
+    view: material/eye
+
+  palette:
+    - scheme: default
+      primary: deep purple
+      accent: deep purple
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: slate
+      primary: deep purple
+      accent: deep purple
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+
+  font:
+    text: Inter
+    code: JetBrains Mono
+
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    - toc.follow
+    - search.suggest
+    - content.action.edit
+    - content.action.view
+    - content.code.copy
+    - content.code.select
+    - content.code.annotate
+
+extra:
+  generator: false
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Proton-Utilities/ProCMP

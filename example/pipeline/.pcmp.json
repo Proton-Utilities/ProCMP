@@ -1,66 +1,69 @@
 {
-    "openComposedOutput": true,
-
-    "testing": {
-        "enabled": true,
-        "inputDir": "tests",
-        "outputDir": "generated/tests",
-        "frame": "pipeline/frames/release.luau",
-        "darkluaConfig": "pipeline/darklua/unminified.json"
-    },
-
     "deployment": {
-        "enabled": true,
         "github": {
-            "enabled": true,
             "owner": "YOUR_NAME",
-            "repo": "YOUR_REPOSITORY"
+            "repo": "YOUR_REPOSITORY",
+            "tokenEnvVar": "GITHUB_TOKEN"
         }
     },
 
     "buildConfigs": [
         {
-            "name": "Debug",
+            "name": "Tests",
+            "inputDir": "tests",
+            "outputDir": "generated/tests",
+            "frame": "pipeline/frames/release.luau",
+            "darkluaConfig": "pipeline/darklua/unminified.json",
             "promptVersion": false,
-            "promptDeploy": false,
+            "promptDeploy": false
+        },
+
+        {
+            "name": "Debug",
+            "input": "src/init.luau",
+            "output": "generated/debug/myScript.luau",
             "frame": "pipeline/frames/debug.luau",
             "darkluaConfig": "pipeline/darklua/unminified.json",
-            "input": "src/init.luau",
-            "output": "generated/debug/myScript.luau"
+            "promptVersion": false,
+            "promptDeploy": false
         },
 
         {
             "name": "Beta",
-            "promptVersion": true,
-            "promptDeploy": true,
-            "prerelease": true,
-            "frame": "pipeline/frames/release.luau",
-            "darkluaConfig": "pipeline/darklua/stable.json",
             "input": "src/init.luau",
             "output": "generated/beta/myScript.luau",
+            "frame": "pipeline/frames/release.luau",
+            "darkluaConfig": "pipeline/darklua/stable.json",
+            "promptVersion": true,
+            "versionFormat": "^v%d+%.%d+%.%d+",
+            "promptDeploy": true,
+            "prerelease": true,
             "variants": [
                 {
-                    "name": "Unminified",
+                    "name": "Beta-Unminified",
                     "darkluaConfig": "pipeline/darklua/unminified.json",
                     "output": "generated/beta/myScript-unminified.luau"
                 }
             ]
         },
+
         {
             "name": "Release",
-            "promptVersion": true,
-            "promptDeploy": true,
-            "frame": "pipeline/frames/release.luau",
-            "darkluaConfig": "pipeline/darklua/stable.json",
             "input": "src/init.luau",
             "output": "generated/release/myScript.luau",
+            "frame": "pipeline/frames/release.luau",
+            "darkluaConfig": "pipeline/darklua/stable.json",
+            "promptVersion": true,
+            "versionFormat": "^v%d+%.%d+%.%d+",
+            "promptDeploy": true,
+            "prerelease": false,
             "variants": [
                 {
-                    "name": "Unminified",
+                    "name": "Release-Unminified",
                     "darkluaConfig": "pipeline/darklua/unminified.json",
                     "output": "generated/release/myScript-unminified.luau"
                 }
             ]
         }
-  ]
+    ]
 }

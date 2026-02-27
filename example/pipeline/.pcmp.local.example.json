@@ -1,0 +1,10 @@
+{
+    "openComposedOutput": {
+        "command": "code",
+        "args": ["{file}"]
+    },
+    "releaseNotesEditor": {
+        "command": "code",
+        "args": ["--wait", "{file}"]
+    }
+}

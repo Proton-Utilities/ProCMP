@@ -1,47 +1,63 @@
 # ProCMP
 
-Build composition system with multi-target support, profiles, and injectable macros.
+Build composition and release pipeline for Luau projects.
 
-## About
+**[→ Documentation](https://proton-utilities.github.io/ProCMP)**
 
-ProCMP allows for easy build composition with composer-markers, it gives you access to runtime build data and add extra information such as headers to your distribution file.
+---
 
-| Release build | Debug build |
-|-|-|
-| ![Release build](./assets/releasePreview.gif) | ![Debug build](./assets/debugPreview.gif) |
-
-> Pre-V2 images
+ProCMP takes your source files, runs them through [darklua](https://github.com/seaofvoices/darklua) for bundling and minification, inserts them into a **frame** using composer markers, and optionally publishes the result directly to GitHub Releases — all from a single interactive CLI.
 
 ## Installation
 
-### [Aftman](http://github.com/LPGhatguy/aftman)
-
-> [!NOTE]  
-> This is currently the only officially supported installation method.
-
-```powershell
-aftman add seaofvoices/darklua # Darklua is required to use ProCMP
-aftman add Proton-Utilities/ProCMP
+```toml title="aftman.toml"
+[tools]
+darklua = "Stefanuk12/darklua@0.17.4"
+lune    = "lune-org/lune@0.10.4"
+ProCMP  = "Proton-Utilities/ProCMP@3.0.0"
 ```
 
-> By default the terminal command is `ProCMP`, you can change this in your `aftman.toml` location.
-
-## Usage
-
-1. **Add a frame**, this is essentially your build insertion file. Add composer markers to get build info like as the build itself, and the build version.
-</br> [Example frame](example/build/frame.luau)
-
-> If you use [luau-lsp](https://github.com/JohnnyMorganz/luau-lsp) and don't like the warnings given when using composer markers, or your own set macros for accessing build info in runtime, then you can use type definitions to silence them.
-</br> [Example type definitions](example/.globals/pcmp.d.luau)
-
-2. **Run using `ProCMP build <config_location>`**, you should be prompted with a CLI interface asking for the build configuration and version. After completing the prompt your file will be built and composed at the output location.
-</br> [Example PCMP config](example/build/.pcmp.json)
-
-Additionally, if you are taking advantage of auto github release deployment, you need to add a `.env` file to the root of your project with your api key.
-```dotenv
-GITHUB_API_KEY="YOUR_API_KEY"
+```sh
+aftman install
 ```
 
-> You can also use *VS code tasks* to build using a keybind instead of typing a terminal command
-</br> [Example VSC task config](example/.vscode/tasks.json)
-</br> [Learn more](https://code.visualstudio.com/docs/debugtest/tasks)
+## Quick start
+
+```sh
+# Scaffold a new project
+pcmp init
+
+# Run the pipeline
+pcmp pipeline/.pcmp.json
+```
+
+## CLI
+
+```
+pcmp <config>    Run pipeline with the given config file
+pcmp init        Interactive project scaffolder
+pcmp --help      Show help
+pcmp --version   Print version
+```
+
+## Team usage
+
+ProCMP separates **shared config** (committed) from **personal preferences** (gitignored):
+
+- `pipeline/.pcmp.json` — build configs, deployment settings → commit this
+- `pipeline/.pcmp.local.json` — your editor, output opener → each developer sets their own
+
+Each team member runs `pcmp init` once to configure their personal local config.
+
+## Documentation
+
+Full documentation at **[proton-utilities.github.io/ProCMP](https://proton-utilities.github.io/ProCMP)**.
+
+Topics covered:
+
+- [Getting started](https://proton-utilities.github.io/ProCMP/getting-started)
+- [pcmp init](https://proton-utilities.github.io/ProCMP/init)
+- [Local config](https://proton-utilities.github.io/ProCMP/local-config)
+- [Composer markers](https://proton-utilities.github.io/ProCMP/composer-markers)
+- [Deployment](https://proton-utilities.github.io/ProCMP/deployment)
+- [Config reference](https://proton-utilities.github.io/ProCMP/config-reference)
