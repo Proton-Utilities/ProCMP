@@ -131,7 +131,18 @@ local function openFile(filePath: string, cfg: OpenFileConfig?)
 		table.insert(resolvedArgs, (arg:gsub("{file}", filePath)))
 	end
 
-	process.exec(cfg.command, resolvedArgs)
+	local command = cfg.command
+	local args = resolvedArgs
+
+	if process.os == "windows" and not command:lower():match("%.exe$") then
+		args = table.clone(args)
+		table.insert(args, 1, command)
+		table.insert(args, 1, "/c")
+		command = "cmd"
+	end
+
+	local run = (process :: any).create or process.exec
+	pcall(run, command, args)
 end
 
 return {

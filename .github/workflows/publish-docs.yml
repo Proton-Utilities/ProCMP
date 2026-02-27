@@ -24,11 +24,12 @@ jobs:
           python-version: 3.x
 
       - name: Set Cache ID
-        run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
+        id: cache-id
+        run: echo "id=$(date --utc '+%V')" >> $GITHUB_OUTPUT
 
       - uses: actions/cache@v4
         with:
-          key: mkdocs-material-${{ env.cache_id }}
+          key: mkdocs-material-${{ steps.cache-id.outputs.id }}
           path: .cache
           restore-keys: |
             mkdocs-material-
