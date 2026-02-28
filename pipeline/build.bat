@@ -10,7 +10,7 @@ set darkluaConfig=pipeline\darklua.json
 set targets=windows-x86_64 linux-x86_64 linux-aarch64 macos-x86_64 macos-aarch64
 
 :: ── Version ──────────────────────────────────────────────────
-set version=3.0.1-beta.1
+set version=3.0.1
 :: ─────────────────────────────────────────────────────────────
 
 rmdir /s /q %outputDir%

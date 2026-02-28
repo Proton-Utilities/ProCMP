@@ -14,13 +14,13 @@ local scaffold = require("@self/scaffold")
 
 --// Constants
 
-local VERSION = "3.0.0"
+local VERSION = "3.0.1"
 
 local RELEASE_BODY_PATH = `{process.env.TEMP or process.env.TMP or "/tmp"}/PCMP_RELEASE_BODY.md`
 
 local HELP_TEXT = "ProCMP v"
 	.. VERSION
-	.. [[ -- Build composition and release pipeline
+	.. [[ Build composition system with multi-target support, profiles, and injectable macros. 
 
 Usage:
   pcmp <config>            Run the pipeline with the given config file
@@ -121,7 +121,7 @@ local function runBuilds(
 
 		local opener = task.openComposedOutput or globalOpen
 		if opener then
-			ui.openFile(task.output, opener)
+			ui.openFile(task.output, opener, false)
 		end
 	end
 

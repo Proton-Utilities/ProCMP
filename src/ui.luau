@@ -19,10 +19,6 @@ local BOX_V = "│"
 
 --// Private Methods
 
-local function colorWrap(text: string, color: io.Color): string
-	return io.color(color) .. text .. io.color("reset")
-end
-
 local function padRight(s: string, width: number): string
 	local len = #s
 	if len >= width then
@@ -98,18 +94,24 @@ local function printSummaryTable(title: string, rows: { SummaryRow })
 		end
 	end
 
-	local innerWidth = maxLabel + 2 + maxValue
+	local innerWidth = maxLabel + 4 + maxValue
 	local titlePadded = " " .. title .. " "
-	local hLine = string.rep(BOX_H, innerWidth + 2)
+	local titleDisplayLen = utf8.len(titlePadded) or #titlePadded
+	local hLine = string.rep(BOX_H, innerWidth)
 
-	local topFill = string.rep(BOX_H, math.floor((innerWidth + 2 - #titlePadded) / 2))
-	local topFillR = string.rep(BOX_H, (innerWidth + 2) - #titlePadded - #topFill)
+	local leftFillCount = math.floor((innerWidth - titleDisplayLen) / 2)
+	local rightFillCount = innerWidth - titleDisplayLen - leftFillCount
+
+	local topFill = string.rep(BOX_H, leftFillCount)
+	local topFillR = string.rep(BOX_H, rightFillCount)
+
 	io.write(io.color("cyan"))
 	print(BOX_TL .. topFill .. titlePadded .. topFillR .. BOX_TR)
 
 	for _, row in ipairs(rows) do
 		local labelPad = padRight(row.label, maxLabel)
-		print(BOX_V .. " " .. colorWrap(labelPad, "white") .. "  " .. row.value .. " " .. BOX_V)
+		local valuePad = padRight(row.value, maxValue)
+		print(BOX_V .. " " .. io.color("white") .. labelPad .. io.color("reset") .. "  " .. valuePad .. " " .. BOX_V)
 	end
 
 	print(BOX_BL .. hLine .. BOX_BR)
@@ -121,7 +123,7 @@ type OpenFileConfig = {
 	args: { string },
 }
 
-local function openFile(filePath: string, cfg: OpenFileConfig?)
+local function openFile(filePath: string, cfg: OpenFileConfig?, wait: boolean?)
 	if not cfg then
 		return
 	end
@@ -134,15 +136,26 @@ local function openFile(filePath: string, cfg: OpenFileConfig?)
 	local command = cfg.command
 	local args = resolvedArgs
 
-	if process.os == "windows" and not command:lower():match("%.exe$") then
-		args = table.clone(args)
-		table.insert(args, 1, command)
-		table.insert(args, 1, "/c")
-		command = "cmd"
+	if wait then
+		if process.os == "windows" and not command:lower():match("%.exe$") then
+			args = table.clone(args)
+			table.insert(args, 1, command)
+			table.insert(args, 1, "/c")
+			command = "cmd"
+		end
+		pcall(process.exec, command, args)
+	else
+		task.spawn(function()
+			local run = (process :: any).create or process.exec
+			if process.os == "windows" and not command:lower():match("%.exe$") then
+				args = table.clone(args)
+				table.insert(args, 1, command)
+				table.insert(args, 1, "/c")
+				command = "cmd"
+			end
+			pcall(run, command, args)
+		end)
 	end
-
-	local run = (process :: any).create or process.exec
-	pcall(run, command, args)
 end
 
 return {

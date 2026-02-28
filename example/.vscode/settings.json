@@ -1,6 +1,0 @@
-{
-    "luau-lsp.types.definitionFiles": [
-        "./.globals/pcmp.d.luau"
-    ],
-    "luau-lsp.sourcemap.enabled": false
-}

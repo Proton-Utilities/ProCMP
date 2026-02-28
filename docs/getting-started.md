@@ -11,7 +11,7 @@ Install via [Aftman](https://github.com/LPGhatguy/aftman) (recommended):
 ```toml title="aftman.toml"
 [tools]
 darklua = "Stefanuk12/darklua@0.17.4"
-ProCMP  = "Proton-Utilities/ProCMP@3.0.0"
+ProCMP  = "Proton-Utilities/ProCMP@3.0.1"
 ```
 
 Then run:
