@@ -22,7 +22,15 @@ aftman install
 
 ---
 
-## Setting up a new project
+### 1. Build using CLI (Configless)
+
+If you don't want to set up a configuration file yet, you can run a build directly:
+
+```bash
+pcmp build -i src/init.luau -o generated/out.luau -f pipeline/frames/release.luau -c pipeline/darklua/stable.json
+```
+
+### 2. Scaffold a new project
 
 The fastest way to get started is `pcmp init`:
 
@@ -57,12 +65,12 @@ You'll be prompted to:
 
 ### CLI flags
 
-| Flag | Description |
-|------|-------------|
-| `pcmp <config>` | Run pipeline with the given config file |
-| `pcmp init` | Interactive project scaffolder |
-| `pcmp --help` / `-h` | Show help |
-| `pcmp --version` / `-V` | Print version string |
+| Flag                    | Description                             |
+| ----------------------- | --------------------------------------- |
+| `pcmp <config>`         | Run pipeline with the given config file |
+| `pcmp init`             | Interactive project scaffolder          |
+| `pcmp --help` / `-h`    | Show help                               |
+| `pcmp --version` / `-V` | Print version string                    |
 
 ---
 
@@ -79,4 +87,4 @@ pcmp pipeline/.pcmp.json
 The output file contains your composed source, inserted into the frame with all composer markers replaced.
 
 !!! note "Editor preview"
-    If you set an editor in `pcmp init`, the composed output will open automatically after each build. This is stored in your gitignored `.pcmp.local.json`.
+If you set an editor in `pcmp init`, the composed output will open automatically after each build. This is stored in your gitignored `.pcmp.local.json`.

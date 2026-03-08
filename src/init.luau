@@ -24,6 +24,7 @@ local HELP_TEXT = "ProCMP v"
 
 Usage:
   pcmp <config>            Run the pipeline with the given config file
+  pcmp build [options]     Run a configless build via CLI
   pcmp init                Initialise a new ProCMP project interactively
   pcmp --help              Show this help message
   pcmp --version           Print version and exit
@@ -32,11 +33,17 @@ Arguments:
   <config>                 Path to a .pcmp.json file
 
 Subcommands:
+  build                    Run a configless build with flags
   init                     Scaffold pipeline files and personal local config
 
 Options:
   -h, --help               Show this help message
   -V, --version            Print version string
+  -i, --input <path>       Input file for 'build' subcommand
+  -o, --output <path>      Output file for 'build' subcommand
+  -f, --frame <path>       Frame file for 'build' subcommand
+  -c, --config <path>      Darklua config for 'build' subcommand
+  -n, --name <name>        Build task name for 'build' subcommand (optional)
 
 Local config:
   Personal settings (editor, output opener) live in .pcmp.local.json next to
@@ -44,6 +51,7 @@ Local config:
 
 Examples:
   pcmp pipeline/.pcmp.json
+  pcmp build -i src/main.luau -o dist/main.luau -f frame.luau -c darklua.json
   pcmp init
 ]]
 
@@ -59,6 +67,11 @@ type ParsedArgs = {
 	subcommand: string?,
 	showHelp: boolean,
 	showVersion: boolean,
+	input: string?,
+	output: string?,
+	frame: string?,
+	darkluaConfig: string?,
+	name: string?,
 }
 
 local function parseArgs(): ParsedArgs
@@ -67,18 +80,43 @@ local function parseArgs(): ParsedArgs
 		subcommand = nil,
 		showHelp = false,
 		showVersion = false,
+		input = nil,
+		output = nil,
+		frame = nil,
+		darkluaConfig = nil,
+		name = nil,
 	}
 
-	for _, arg in ipairs(process.args) do
+	local i = 1
+	while i <= #process.args do
+		local arg = process.args[i]
 		if arg == "--help" or arg == "-h" then
 			result.showHelp = true
 		elseif arg == "--version" or arg == "-V" then
 			result.showVersion = true
 		elseif arg == "init" then
 			result.subcommand = "init"
+		elseif arg == "build" then
+			result.subcommand = "build"
+		elseif arg == "--input" or arg == "-i" then
+			i += 1
+			result.input = process.args[i]
+		elseif arg == "--output" or arg == "-o" then
+			i += 1
+			result.output = process.args[i]
+		elseif arg == "--frame" or arg == "-f" then
+			i += 1
+			result.frame = process.args[i]
+		elseif arg == "--config" or arg == "-c" then
+			i += 1
+			result.darkluaConfig = process.args[i]
+		elseif arg == "--name" or arg == "-n" then
+			i += 1
+			result.name = process.args[i]
 		elseif not arg:match("^%-") then
 			result.configPath = arg
 		end
+		i += 1
 	end
 
 	return result
@@ -144,6 +182,25 @@ end
 
 if args.subcommand == "init" then
 	scaffold.run()
+	process.exit(0)
+end
+
+if args.subcommand == "build" then
+	if not args.input or not args.output or not args.frame or not args.darkluaConfig then
+		ui.printError("Missing required build flags (-i, -o, -f, -c).")
+		print(HELP_TEXT)
+		process.exit(1)
+	end
+
+	local task: config.BuildTask = {
+		name = args.name or "Task",
+		input = args.input,
+		output = args.output,
+		frame = args.frame,
+		darkluaConfig = args.darkluaConfig,
+	}
+
+	runBuilds({ task }, args.name or "Task", "0.0.0", nil)
 	process.exit(0)
 end
 
