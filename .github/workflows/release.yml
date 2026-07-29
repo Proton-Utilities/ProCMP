@@ -1,0 +1,68 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest,  target: x86_64-unknown-linux-gnu,  name: linux-x86_64  }
+          - { os: ubuntu-latest,  target: aarch64-unknown-linux-gnu, name: linux-aarch64 }
+          - { os: macos-latest,   target: x86_64-apple-darwin,       name: macos-x86_64  }
+          - { os: macos-latest,   target: aarch64-apple-darwin,      name: macos-aarch64 }
+          - { os: windows-latest, target: x86_64-pc-windows-msvc,    name: windows-x86_64 }
+    steps:
+      - uses: actions/checkout@v5
+      - uses: Swatinem/rust-cache@v2
+      - run: rustup target add ${{ matrix.target }}
+      - uses: taiki-e/install-action@v2
+        if: matrix.target == 'aarch64-unknown-linux-gnu'
+        with:
+          tool: cross
+      - name: Build
+        shell: bash
+        run: |
+          if [ "${{ matrix.target }}" = "aarch64-unknown-linux-gnu" ]; then
+            cross build --release --locked --target ${{ matrix.target }}
+          else
+            cargo build --release --locked --target ${{ matrix.target }}
+          fi
+      - name: Package
+        shell: bash
+        run: |
+          set -eu
+          staging="pcmp-${{ github.ref_name }}-${{ matrix.name }}"
+          mkdir -p "$staging"
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            cp "target/${{ matrix.target }}/release/pcmp.exe" "$staging/"
+          else
+            cp "target/${{ matrix.target }}/release/pcmp" "$staging/"
+          fi
+          cp README.md LICENSE "$staging/"
+          zip -r "$staging.zip" "$staging"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}
+          path: "*.zip"
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: "*.zip"
+          generate_release_notes: true

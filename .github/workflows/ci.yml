@@ -1,0 +1,147 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -D warnings
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Format and lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --all --check
+      - run: cargo clippy --all-targets
+
+  build:
+    name: Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo build --release
+
+  docs:
+    name: Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: Swatinem/rust-cache@v2
+      - uses: astral-sh/setup-uv@v7
+      - run: cargo build --release
+
+      # The catalogue lives in the binary. A committed page that disagrees with it is
+      # worse than no page, so regenerating and diffing is the whole check.
+      - run: ./target/release/pcmp explain --format markdown > docs/diagnostics.md
+      - run: git diff --exit-code docs/diagnostics.md
+
+      # `--strict` turns a broken link or a dead anchor into a failure. Most of those
+      # anchors are the diagnostic codes, so renaming a code without fixing what points at
+      # it fails here rather than shipping.
+      - run: uvx zensical build --strict
+
+  behaviour:
+    name: Behaviour
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo build --release
+
+      # A fixture in a heredoc rather than in the repository: this exercises the binary
+      # a user gets, and leaves nothing behind to keep in step with the code.
+      - name: Build a fixture, lock it, and reproduce it
+        run: |
+          set -euxo pipefail
+          pcmp="$GITHUB_WORKSPACE/target/release/pcmp"
+          mkdir -p /tmp/fixture/src && cd /tmp/fixture
+
+          cat > src/init.luau <<'LUAU'
+          --!strict
+          local VERSION: string = PCMP_VERSION
+          if DEBUG then print("stripped") end
+          return { version = VERSION, retries = RETRIES }
+          LUAU
+
+          cat > pcmp.luau <<'MANIFEST'
+          return {
+            vars = { name = "fixture", version = "v1.0.0", retries = 3, built = pcmp.now() },
+            profiles = {
+              release = {
+                entry   = "src/init.luau",
+                output  = "dist/{name}.luau",
+                define  = { DEBUG = false },
+                header  = { "-- {name} {version} ({built})" },
+                darklua = {
+                  generator = "dense",
+                  rules = {
+                    "compute_expression",
+                    "remove_unused_if_branch",
+                    "remove_types",
+                    "remove_comments",
+                  },
+                },
+              },
+            },
+          }
+          MANIFEST
+
+          # This manifest reads the clock and no lock records the answer, which is the
+          # one thing `--strict` is there to catch.
+          ! "$pcmp" check --strict
+
+          "$pcmp" build --lock
+          test -f pcmp.lock
+          "$pcmp" check --strict
+
+          # The property the whole tool exists for. A different second, a timestamp
+          # baked into the header, and the artifacts still match the lock.
+          sleep 1
+          "$pcmp" build --frozen
+
+          # The honest inverse, with the clock live again. A manifest that asks the time
+          # is a different build each second, so this must not report a cache hit.
+          sleep 1
+          "$pcmp" build --json | jq -e '[.tasks[] | select(.status == "cached")] | length == 0'
+
+          # Everything below pins the clock, so each check varies one thing. Without the
+          # pin, `pcmp.now()` alone would explain every rebuild and prove nothing.
+          export SOURCE_DATE_EPOCH=1700000000
+
+          # The pinned instant is now the only one, so the first build settles the cache
+          # and the second finds nothing to do.
+          "$pcmp" build
+          "$pcmp" build --json | jq -e '[.tasks[] | select(.status != "cached")] | length == 0'
+
+          # An artifact edited by hand is noticed, not trusted. Nothing else moved, so a
+          # rebuild here can only come from the artifact digest.
+          echo "-- tampered" > dist/fixture.luau
+          "$pcmp" build --json | jq -e '[.tasks[] | select(.status != "built")] | length == 0'
+          ! grep -q "tampered" dist/fixture.luau
+
+  audit:
+    name: Advisories
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      # A prebuilt binary rather than `cargo install`: building cargo-audit from source
+      # resolves its dependencies to their latest versions, whose MSRV moves ahead of the
+      # toolchain this repository pins, and the build fails on a dependency nobody chose.
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-audit
+      - run: cargo audit

@@ -1,0 +1,46 @@
+{
+  // Each becomes a {name} token and a PCMP_<NAME> constant.
+  // Override per build with `pcmp build --var version=v1.2.3`.
+  vars: {
+    name: "%NAME%",
+    version: "v0.0.0-dev",
+  },
+
+  // Never built. Extended by the profiles below.
+  templates: {
+    base: {
+      entry: "%ENTRY%",
+      output: "dist/{profile}/{name}.luau",
+      darklua: {
+        bundle: { require_mode: "luau" },
+      },
+    },
+  },
+
+  profiles: {
+    dev: {
+      extends: "base",
+      define: { DEBUG: true },
+      darklua: {
+        generator: "readable",
+        rules: ["compute_expression"],
+      },
+    },
+
+    release: {
+      extends: "base",
+      define: { DEBUG: false },
+      header: ["-- {name} {version}"],
+      darklua: {
+        generator: "dense",
+        rules: [
+          "compute_expression",
+          "remove_unused_if_branch",
+          "remove_types",
+          "remove_comments",
+          "rename_variables",
+        ],
+      },
+    },
+  },
+}

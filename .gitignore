@@ -1,3 +1,5 @@
-generated/
-.env
-pipeline/.pcmp.local.json
+target/
+.pcmp/
+dist/
+site/
+.cache/

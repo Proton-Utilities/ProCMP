@@ -1,0 +1,46 @@
+--!strict
+-- Only this format can compute a value rather than be given one. Everything `pcmp`
+-- hands over is written into pcmp.lock, so `pcmp build --frozen` reproduces it exactly.
+
+return {
+	vars = {
+		name    = "%NAME%",
+		version = pcmp.envOr("VERSION", "v0.0.0-dev"),
+		built   = pcmp.now(),
+	},
+
+	templates = {
+		base = {
+			entry   = "%ENTRY%",
+			output  = "dist/{profile}/{name}.luau",
+			darklua = { bundle = { require_mode = "luau" } },
+		},
+	},
+
+	profiles = {
+		dev = {
+			extends = "base",
+			define  = { DEBUG = true },
+			darklua = {
+				generator = "readable",
+				rules     = { "compute_expression" },
+			},
+		},
+
+		release = {
+			extends = "base",
+			define  = { DEBUG = false },
+			header  = { "-- {name} {version} ({built})" },
+			darklua = {
+				generator = "dense",
+				rules     = {
+					"compute_expression",
+					"remove_unused_if_branch",
+					"remove_types",
+					"remove_comments",
+					"rename_variables",
+				},
+			},
+		},
+	},
+}

@@ -1,0 +1,82 @@
+[package]
+name         = "procmp"
+description  = "Multi-target build composition for Luau projects"
+version      = "4.0.0"
+edition      = "2024"
+rust-version = "1.90"
+license      = "MIT"
+repository   = "https://github.com/Proton-Utilities/ProCMP"
+keywords     = ["luau", "darklua", "bundler", "roblox", "build"]
+categories   = ["command-line-utilities", "development-tools::build-utils"]
+exclude      = ["docs/", ".github/", "zensical.toml", "rust-toolchain.toml", "rustfmt.toml"]
+
+[[bin]]
+name = "pcmp"
+path = "src/main.rs"
+
+[dependencies]
+blake3                = "1"
+camino                = { version = "1", features = ["serde1"] }
+clap                  = { version = "4", features = ["derive", "string", "wrap_help"] }
+# Pinned exactly, and mirrored by `procmp::DARKLUA`. Bump both. A darklua patch release
+# can change emitted bytes, and the version is part of every cache key.
+darklua               = "=0.19.0"
+json5                 = "1"
+mlua                  = { version = "0.11", features = ["luau", "vendored", "serialize"] }
+notify                = "8"
+notify-debouncer-full = "0.7"
+schemars              = "1"
+serde                 = { version = "1", features = ["derive"] }
+# `preserve_order` is load-bearing. darklua takes the first matching loader pattern and
+# accepts loaders only as a JSON map — its deserialiser has no `visit_seq`, and
+# `Configuration::add_loader` cannot be called from outside because its `Loader` parameter
+# is not re-exported. So loader order survives only because this map preserves insertion
+# order. `plan::canonical` therefore sorts explicitly rather than relying on the map.
+serde_json            = { version = "1", features = ["preserve_order"] }
+toml                  = "1"
+wax                   = "0.7"
+
+[profile.release]
+lto           = "thin"
+strip         = true
+codegen-units = 1
+
+# `panic = "abort"` is absent on purpose: mlua unwinds across the C boundary.
+
+[profile.dev.package."*"]
+opt-level = 2
+
+[lints.rust]
+unsafe_code                   = "forbid"
+missing_debug_implementations = "warn"
+# `unreachable_pub` is deliberately absent. There is one crate and no library target, so
+# nothing is reachable from outside at all, and the lint would fire on every item that
+# crosses a module boundary. The public surface was shrunk by deleting the library, which
+# is a stronger guarantee than any spelling of `pub`.
+
+[lints.clippy]
+pedantic = { level = "deny", priority = -1 }
+nursery  = { level = "deny", priority = -1 }
+
+# restriction, chosen individually — never as a group
+unwrap_used      = "deny"
+expect_used      = "deny"
+panic            = "deny"
+todo             = "deny"
+unimplemented    = "deny"
+indexing_slicing = "deny"
+dbg_macro        = "deny"
+# `println!` panics on a closed pipe, which `pcmp plan | head` produces routinely.
+# Only `cli::render` writes to a stream, and it carries the one `#[allow]`.
+print_stdout            = "deny"
+print_stderr            = "deny"
+self_named_module_files = "deny"
+
+# allowed, each for a stated reason
+missing_errors_doc           = "allow" # an `# Errors` section restating the return type is noise
+missing_panics_doc           = "allow" # `panic` and `unwrap_used` are denied, so there are none
+must_use_candidate           = "allow" # would decorate every accessor
+similar_names                = "allow" # `diag`/`diags`, `task`/`tasks` are the right names
+option_if_let_else           = "allow" # regularly produces worse code than the match it replaces
+missing_const_for_fn         = "allow" # churns on every signature change for no gain here
+derive_partial_eq_without_eq = "allow" # serde-facing types
